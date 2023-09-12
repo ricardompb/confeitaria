@@ -45,22 +45,19 @@ const Register = (filename) => {
         apiConfig[verb][path] = {
           name: api.config.name,
           label: api.config.label,
-          ...cfg,
-          method: verb
+          ...cfg          
         }
       })
     }    
   })
 } 
 
-function Rest (config) {
-  this.config = config
-}
-
 module.exports = {
   config: apiConfig,
-  Rest,
   Register,
+  Rest: function (config) {
+    this.config = config
+  },
   async setup () {
     const { port } = require('../../config.json').system.api    
     server.listen(port, () => {

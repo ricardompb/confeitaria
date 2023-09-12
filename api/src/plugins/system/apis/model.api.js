@@ -9,9 +9,9 @@ module.exports = (config) => {
         handler: async (req, res) => {
           const { id } = req.query
           if (id) {
-            return config.get(id)
+            return config.get(id, req.ctx)
           }
-          return config.findAll()
+          return config.findAll({}, req.ctx)
         }
       }
     },
