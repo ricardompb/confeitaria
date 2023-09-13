@@ -41,6 +41,11 @@ module.exports = {
         transaction: ctx.transaction
       })
     },
+    async findOne (options, ctx = {}) {
+      return document.findOne(options, {
+        transaction: ctx.transaction
+      })
+    },
     async findAll (options, ctx = {}) {
       return document.findAll(options, {
         transaction: ctx.transaction

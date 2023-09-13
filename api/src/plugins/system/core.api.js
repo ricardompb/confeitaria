@@ -7,11 +7,15 @@ const router = express.Router()
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
-const handler = async (req, res) => {  
-  const [url] = req.originalUrl.split('?')
-  const api = apiConfig[req.method][url]
-  if (!api) return res.json({ message: 'Api não encontrada', error: true })
-  res.json(await api.handler(req, res))
+const handler = async (req, res) => {
+  try {
+    const [url] = req.originalUrl.split('?')
+    const api = apiConfig[req.method][url]
+    if (!api) return res.json({ message: 'Api não encontrada', error: true })  
+    res.status(/post/i.test(req.method) ? 201 : 200).json(await api.handler(req, res))  
+  } catch (e) {
+    res.status(404).json({ message: e.message, error: true })
+  }
 }
 
 router.get('/:module/:class/:method', handler)
@@ -30,7 +34,11 @@ const apiConfig = {
 
 const Register = (filename) => {
   const api = (() => {
-    const api = require(`../../plugins${filename}`)
+    if (typeof filename === 'object') {
+      return filename
+    }
+    const sufix = filename.match(/models/) ? '.model' : '.api'
+    const api = require(`../../plugins${filename}${sufix}`)
     if (filename.match(/models/)) {
       return require('./apis/model.api')(api)
     }

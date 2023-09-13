@@ -10,6 +10,12 @@ function Schema (schema) {
     return db.document.get(id, ctx)
   }
 
+  this.findOne = async (options = {}, ctx = {}) => {
+    options.where = options.where || {}
+    options.where.type = schema.name
+    return db.document.findOne(options, ctx)
+  }
+
   this.findAll = async (options = {}, ctx = {}) => {
     options.where = options.where || {}
     options.where.type = schema.name
